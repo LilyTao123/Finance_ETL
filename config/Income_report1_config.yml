@@ -1,0 +1,68 @@
+# configuration specific to creating mysql connections
+mysql:
+  host: 'localhost'
+  user: 'root'
+  password: '158158at'
+  database: 'gama'
+  trg_table: '财报数据'
+  id_sql: "select 股票代码, 上市类型 from 上市企业 where 上市类型 ='深A' limit 1"
+
+
+# configuration specific to the target website
+web:
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36',
+    'Host': 'stock.xueqiu.com',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Connection':'keep-alive',
+    'Cookie':'xq_a_token=dd874a8d08edaeb9cdc493d9239c447738426b96;'
+    }
+  income_url: 'https://stock.xueqiu.com/v5/stock/finance/cn/income.json'
+  balance_url: 'https://stock.xueqiu.com/v5/stock/finance/cn/balance.json'
+  cash_url: 'https://stock.xueqiu.com/v5/stock/finance/cn/cash_flow.json'
+  # Type can be{'Q4': yearly, 'all': all data, 'Q1'} 
+  type: 'all'
+  id_detail: true
+  count: 2
+  report_period: '2022中报'
+
+# target data format
+trg_format:
+  trg_column: {'month':'month','location.street.id': 'street_id', 'location.street.name':'street_name',
+                "category": "crime_category", 'location_type':'location_type', 
+              'location.latitude':'location_latitude', 'location.longitude':'location_longitude'}
+  trg_file_format: '.csv'
+  trg_date_format: '%Y-%m'
+
+
+
+# Configuration specific to the meta file 
+meta: 
+  meta_key: 'meta_file.csv'
+
+
+  
+# logging configuration
+logging:
+  version: 1
+  formatters:
+    crime:
+      format: 'Finance Transformer - %(asctime)s - %(levelname)s - %(message)s'
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: crime
+      level: DEBUG
+  root: 
+    level: DEBUG
+    handlers: [console]
+
+  # read file configuration
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
